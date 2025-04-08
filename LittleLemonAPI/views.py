@@ -35,12 +35,17 @@ from rest_framework import generics
 from .serializers import BookSerializer, MenuItemSerializer
 from django.shortcuts import get_object_or_404
 
-@api_view()
+@api_view(['GET', 'POST'])
 def menu_item(request):
-  # items = MenuItem.objects.all()
-  items = MenuItem.objects.select_related('category').all()
-  serialized_item = MenuItemSerializer(items, many=True)
-  return Response(serialized_item.data)
+  if request.method == 'GET':
+    items = MenuItem.objects.select_related('category').all()
+    serialized_item = MenuItemSerializer(items, many=True)
+    return Response(serialized_item.data)
+  if request.method == 'POST':
+    serialized_item = MenuItemSerializer(data=request.data)
+    serialized_item.is_valid(raise_exception=True)
+    serialized_item.save()
+    return Response(serialized_item.data, status.HTTP_201_CREATED)
 
 @api_view()
 # ?       menu-items/<int:id>
