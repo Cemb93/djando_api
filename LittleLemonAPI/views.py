@@ -39,6 +39,18 @@ from django.shortcuts import get_object_or_404
 def menu_item(request):
   if request.method == 'GET':
     items = MenuItem.objects.select_related('category').all()
+    # * FILTROS Y BUSQUEDA
+    category_name = request.query_params.get('category')
+    price = request.query_params.get('price')
+    search = request.query_params.get('search')
+    if category_name:
+      # ! AGREGAR DOS GIONES "__" ENTRE EL MODELO Y EL CAMPO EN RELACION, EN ESTE CASO "title"
+      items = items.filter(category__title=category_name)
+    if price:
+      items = items.filter(price__lte=price)
+    if search:
+      # ! AGREGAR DOS GIONES "__"
+      items = items.filter(title__istartswith=search)
     serialized_item = MenuItemSerializer(items, many=True)
     return Response(serialized_item.data)
   if request.method == 'POST':
