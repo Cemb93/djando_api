@@ -35,6 +35,13 @@ from rest_framework import generics
 from .serializers import BookSerializer, MenuItemSerializer
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator, EmptyPage
+from rest_framework import viewsets
+
+class MenuItemsViewSet(viewsets.ModelViewSet):
+  queryset = MenuItem.objects.all()
+  serializer_class = MenuItemSerializer
+  ordering_fields=['price','inventory']
+  search_fields=['title','category__title']
 
 @api_view(['GET', 'POST'])
 def menu_item(request):
