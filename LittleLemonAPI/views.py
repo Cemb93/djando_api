@@ -43,6 +43,7 @@ def menu_item(request):
     category_name = request.query_params.get('category')
     price = request.query_params.get('price')
     search = request.query_params.get('search')
+    ordering = request.query_params.get('ordering')
     if category_name:
       # ! AGREGAR DOS GIONES "__" ENTRE EL MODELO Y EL CAMPO EN RELACION, EN ESTE CASO "title"
       items = items.filter(category__title=category_name)
@@ -51,6 +52,10 @@ def menu_item(request):
     if search:
       # ! AGREGAR DOS GIONES "__"
       items = items.filter(title__istartswith=search)
+    if ordering:
+      # http://127.0.0.1:8000/api/menu-items?ordering=price,inventory
+      ordering_fields = ordering.split(',')
+      items = items.order_by(*ordering_fields)
     serialized_item = MenuItemSerializer(items, many=True)
     return Response(serialized_item.data)
   if request.method == 'POST':
