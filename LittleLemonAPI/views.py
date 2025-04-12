@@ -30,18 +30,35 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-from .models import Book, MenuItem
+from .models import MenuItem, Category
 from rest_framework import generics
-from .serializers import BookSerializer, MenuItemSerializer
+from .serializers import MenuItemSerializer, CategorySerializer
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator, EmptyPage
 from rest_framework import viewsets
 
-class MenuItemsViewSet(viewsets.ModelViewSet):
+class CategoriesView(generics.ListCreateAPIView):
+  queryset = Category.objects.all()
+  serializer_class = CategorySerializer
+
+# * UPDATE - DELETE
+class SingleCategoryView(generics.RetrieveUpdateDestroyAPIView):
+  queryset = Category.objects.all()
+  serializer_class = CategorySerializer
+
+# * CRUD MENU ITEMS
+class MenuItemsViewSet(generics.ListCreateAPIView):
   queryset = MenuItem.objects.all()
   serializer_class = MenuItemSerializer
   ordering_fields=['price','inventory']
-  search_fields=['title','category__title']
+  filterset_fields=['price','inventory']
+  search_fields=['title']
+  # search_fields=['title','category__title']
+
+# * UPDATE - DELETE
+class SingleMenuItemView(generics.RetrieveUpdateDestroyAPIView):
+  queryset = MenuItem.objects.all()
+  serializer_class = MenuItemSerializer
 
 @api_view(['GET', 'POST'])
 def menu_item(request):
@@ -90,13 +107,13 @@ def single_item(resquest, id):
   serialized_item = MenuItemSerializer(item)
   return Response(serialized_item.data)
 
-class BookView(generics.ListCreateAPIView):
-  queryset = Book.objects.all()
-  serializer_class = BookSerializer
+# class BookView(generics.ListCreateAPIView):
+#   queryset = Book.objects.all()
+#   serializer_class = BookSerializer
 
-class SingleBookView(generics.RetrieveUpdateAPIView):
-  queryset = Book.objects.all()
-  serializer_class = BookSerializer
+# class SingleBookView(generics.RetrieveUpdateAPIView):
+#   queryset = Book.objects.all()
+#   serializer_class = BookSerializer
 
 class MenuItemsView(generics.ListCreateAPIView):
   queryset = MenuItem.objects.all()

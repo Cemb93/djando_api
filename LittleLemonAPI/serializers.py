@@ -1,11 +1,12 @@
 from rest_framework import serializers
-from .models import Book, MenuItem, Category
+from .models import MenuItem, Category
 from decimal import Decimal
 
 class CategorySerializer(serializers.ModelSerializer):
   class Meta:
     model = Category
-    fields = ['id', 'slug', 'title']
+    fields = ['id', 'title']
+    # fields = ['id', 'slug', 'title']
 
 # * SERIALIZANCION VIDEO
 class MenuItemSerializer(serializers.ModelSerializer):
@@ -32,7 +33,7 @@ class MenuItemSerializer(serializers.ModelSerializer):
     return product.price * Decimal(1.1)
 
 # * SERIALIZACION ACTIVIDAD
-class BookSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Book
-    fields = ['id','title','author','price']
+# class BookSerializer(serializers.ModelSerializer):
+#   class Meta:
+#     model = Book
+#     fields = ['id','title','author','price']

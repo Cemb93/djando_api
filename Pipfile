@@ -5,10 +5,10 @@ name = "pypi"
 
 [packages]
 django = "*"
-djangorestframework = "*"
 djangorestframework-xml = "*"
 mysqlclient = "*"
 django-filter = "*"
+djangorestframework = "*"
 
 [dev-packages]
 
