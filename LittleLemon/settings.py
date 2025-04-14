@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'LittleLemonAPI',
     'rest_framework',
+    # * TOKEN CON DRF
+    'rest_framework.authtoken',
     'django_filters',
 ]
 
@@ -136,6 +138,10 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
         'rest_framework_xml.renderers.XMLRenderer',
+    ],
+    # * TOKEN CON DRF
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',    
     ],
     # * PARA VISUALIZAR EL FILTRADO EN LA VISTA
     'DEFAULT_FILTER_BACKENDS': [

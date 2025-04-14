@@ -29,36 +29,37 @@
 
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from .models import MenuItem, Category
 from rest_framework import generics
 from .serializers import MenuItemSerializer, CategorySerializer
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator, EmptyPage
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
-class CategoriesView(generics.ListCreateAPIView):
-  queryset = Category.objects.all()
-  serializer_class = CategorySerializer
+# class CategoriesView(generics.ListCreateAPIView):
+#   queryset = Category.objects.all()
+#   serializer_class = CategorySerializer
 
-# * UPDATE - DELETE
-class SingleCategoryView(generics.RetrieveUpdateDestroyAPIView):
-  queryset = Category.objects.all()
-  serializer_class = CategorySerializer
+# # * UPDATE - DELETE
+# class SingleCategoryView(generics.RetrieveUpdateDestroyAPIView):
+#   queryset = Category.objects.all()
+#   serializer_class = CategorySerializer
 
-# * CRUD MENU ITEMS
-class MenuItemsViewSet(generics.ListCreateAPIView):
-  queryset = MenuItem.objects.all()
-  serializer_class = MenuItemSerializer
-  ordering_fields=['price','inventory']
-  filterset_fields=['price','inventory']
-  search_fields=['title']
-  # search_fields=['title','category__title']
+# # * CRUD MENU ITEMS
+# class MenuItemsViewSet(generics.ListCreateAPIView):
+#   queryset = MenuItem.objects.all()
+#   serializer_class = MenuItemSerializer
+#   ordering_fields=['price','inventory']
+#   filterset_fields=['price','inventory']
+#   search_fields=['title']
+#   # search_fields=['title','category__title']
 
-# * UPDATE - DELETE
-class SingleMenuItemView(generics.RetrieveUpdateDestroyAPIView):
-  queryset = MenuItem.objects.all()
-  serializer_class = MenuItemSerializer
+# # * UPDATE - DELETE
+# class SingleMenuItemView(generics.RetrieveUpdateDestroyAPIView):
+#   queryset = MenuItem.objects.all()
+#   serializer_class = MenuItemSerializer
 
 @api_view(['GET', 'POST'])
 def menu_item(request):
@@ -77,10 +78,12 @@ def menu_item(request):
       # ! AGREGAR DOS GIONES "__" ENTRE EL MODELO Y EL CAMPO EN RELACION, EN ESTE CASO "title"
       items = items.filter(category__title=category_name)
     if price:
-      items = items.filter(price__lte=price)
+      # items = items.filter(price__lte=price)
+      items = items.filter(price=price)
     if search:
       # ! AGREGAR DOS GIONES "__"
-      items = items.filter(title__istartswith=search)
+      # items = items.filter(title__istartswith=search)
+      items = items.filter(title__contains=search)
     if ordering:
       # http://127.0.0.1:8000/api/menu-items?ordering=price,inventory
       ordering_fields = ordering.split(',')
@@ -107,18 +110,10 @@ def single_item(resquest, id):
   serialized_item = MenuItemSerializer(item)
   return Response(serialized_item.data)
 
-# class BookView(generics.ListCreateAPIView):
-#   queryset = Book.objects.all()
-#   serializer_class = BookSerializer
-
-# class SingleBookView(generics.RetrieveUpdateAPIView):
-#   queryset = Book.objects.all()
-#   serializer_class = BookSerializer
-
-class MenuItemsView(generics.ListCreateAPIView):
-  queryset = MenuItem.objects.all()
-  serializer_class = MenuItemSerializer
-
-class SingleMenuItemView(generics.RetrieveUpdateDestroyAPIView):
-  queryset = MenuItem.objects.all()
-  serializer_class = MenuItemSerializer
+@api_view()
+# * TOKEN CON DRF
+@permission_classes([IsAuthenticated])
+def secret(request):
+  return Response({
+    "message": "Some secret message",
+  })
