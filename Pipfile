@@ -9,6 +9,7 @@ djangorestframework-xml = "*"
 mysqlclient = "*"
 django-filter = "*"
 djangorestframework = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 
